@@ -1,4 +1,6 @@
 import axios from "axios";
+import useValidacao from "./useValidacao";
+import { useState } from "react";
 
 type objsProps = {
   url: string;
@@ -7,6 +9,9 @@ type objsProps = {
 };
 
 export default function useRequisicao() {
+  const { validarRespostaRequisicao } = useValidacao();
+  const [msg, setMsg] = useState<string | null | undefined>("");
+
   const requisicao = (valor: objsProps) => {
     axios({
       method: valor.metodo,
@@ -14,14 +19,21 @@ export default function useRequisicao() {
       data: valor.dados ? valor.dados : {},
     })
       .then((res) => {
-        console.log(res.data);
+        validarRespostaRequisicao(res.data);
+        if (res.data.erro) {
+          setMsg(res.data.msg);
+          return;
+        }
+
+        setMsg(res.data.msg);
       })
       .catch((err) => {
-        console.error(err);
+        console.log(err);
       });
   };
 
   return {
     requisicao,
+    msg,
   };
 }

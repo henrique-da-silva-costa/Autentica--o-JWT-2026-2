@@ -53,6 +53,8 @@ class UsuarioController extends Controller
             return Response::json(["erro" => TRUE, "msg" => "Usuario não encontrado"]);
         }
 
+        $existe->erro = FALSE;
+
         return Response::json($existe);
     }
 }

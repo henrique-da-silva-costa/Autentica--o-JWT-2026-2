@@ -1,12 +1,12 @@
-import React, { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type ChangeEvent } from "react";
 import { Button } from "reactstrap";
-import axios from "axios";
 import useRequisicao from "../hooks/useRequisicao";
+import useValidacao from "../hooks/useValidacao";
 
 const Formulario = (valor: { dados: {} }) => {
   const [formularioValor, setFormularioValor] = useState<object>(valor.dados);
-  const [msg, setMsg] = useState<string>("");
-  const { requisicao } = useRequisicao();
+  const { requisicao, msg } = useRequisicao();
+
   const enviar = (e: ChangeEvent) => {
     e.preventDefault();
 
@@ -15,22 +15,6 @@ const Formulario = (valor: { dados: {} }) => {
       metodo: "post",
       dados: formularioValor,
     });
-
-    // axios
-    //   .post("http://127.0.0.1:8000/api/login", formularioValor, {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //   })
-    //   .then((res) => {
-    //     console.log(res.data);
-    //     if (!res.data.msg.erro) {
-    //       setMsg(res.data.msg);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //   });
   };
 
   const changeFormulario = (e: ChangeEvent<HTMLInputElement>) => {
@@ -40,21 +24,24 @@ const Formulario = (valor: { dados: {} }) => {
   };
 
   return (
-    <form onSubmit={enviar}>
-      {Object.entries(formularioValor).map(([chave, valor]) => {
-        return (
-          <div key={chave}>
-            <input
-              type="text"
-              value={valor}
-              name={chave}
-              onChange={(e) => changeFormulario(e)}
-            />
-          </div>
-        );
-      })}
-      <Button color="success">ENVIAR</Button>
-    </form>
+    <>
+      <form onSubmit={enviar}>
+        {Object.entries(formularioValor).map(([chave, valor]) => {
+          return (
+            <div key={chave}>
+              <input
+                type="text"
+                value={valor}
+                name={chave}
+                onChange={(e) => changeFormulario(e)}
+              />
+            </div>
+          );
+        })}
+        <Button color="success">ENVIAR</Button>
+      </form>
+      <p>{msg}</p>
+    </>
   );
 };
 
